@@ -1,0 +1,69 @@
+version: "3.7"
+services:
+    web:
+        image: nginx:latest
+        restart: always
+        volumes:
+            - ./deploy/nginx/templates:/etc/nginx/templates
+            - ./deploy/nginx/logs:/web/logs/nginx
+            # - ./server:/opt/www/server
+            # - ./ui:/opt/www/ui
+        expose:
+            - 80
+        environment:
+            NGINX_PORT: ${DOCKER_WEB_PORT}
+            DOCKER_UI_IP: ${DOCKER_UI_IP}
+    server:
+        build:
+            context: ./deploy/docker/server
+            dockerfile: Dockerfile.${DOCKER_ENV}
+        container_name: wiki_server_hyperf
+        image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
+        entrypoint: ["php", "/opt/www/bin/hyperf.php", "start"]
+        restart: always
+        tty: true
+        volumes:
+            - .:/opt/www
+    ui:
+        build:
+            context: ./deploy/docker/ui
+            dockerfile: Dockerfile.${DOCKER_ENV}
+        container_name: wiki_ui_nextjs
+        image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}
+        restart: always
+        tty: true
+        expose:
+            - 3000
+        volumes:
+            - .:/opt/www
+    db:
+        image: mysql:8
+        command: --default-authentication-plugin=mysql_native_password
+        volumes:
+            - ./deploy/mysql:/var/lib/mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
+        expose:
+            - ${DOCKER_DB_PORT}
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:4.9.4-fpm-alpine
+        restart: always
+        environment:
+            PMA_HOST: db
+            PMA_VERBOSE: 8
+            PMA_PORT: ${DOCKER_DB_PORT}
+            MYSQL_USER: root
+            MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
+        volumes:
+            - ./deploy/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+        expose:
+            - 80
+    portainer:
+        image: portainer/portainer:latest
+        container_name: portainer
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        expose:
+            - 9000

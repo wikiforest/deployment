@@ -1,0 +1,57 @@
+upstream hyperf {
+    server server:9501;
+    server server:9502;
+}
+
+server {
+    listen ${NGINX_PORT};
+    root /opt/www;
+    server_name api.wikiforest.com;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    access_log /web/logs/nginx/access.log;
+    error_log  /web/logs/nginx/error.log;
+    charset utf-8;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        add_header Access-Control-Allow-Origin 'http://wikiforest.com';
+        add_header Access-Control-Allow-Credentials 'true';
+        add_header Access-Control-Allow-Methods 'GET, POST, OPTIONS';
+        add_header Access-Control-Allow-Headers '
+            Origin,
+            Accept,
+            X-Requested-With,
+            Content-Type,
+            Authorization,
+            User-Agent,
+            DNT,
+            Cache-Control,
+            X-Mx-ReqToken,
+            Access-Control-Allow-Headers,
+            Access-Control-Request-Method,
+            Access-Control-Request-Headers,
+            Access-Control-Allow-Origin,
+            Access-Control-Allow-Credentials,
+            access-control-allow-methods,
+            access-control-allow-origin,
+            access-control-allow-credentials'
+        ;
+
+        if ($request_method = 'OPTIONS') {
+            return 204;
+        }
+
+        proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
+        proxy_pass http://hyperf;
+    }
+}
