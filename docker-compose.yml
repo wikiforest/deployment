@@ -60,6 +60,7 @@ services:
             - ./deploy/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
         expose:
             - 80
+            - 9000
     portainer:
         image: portainer/portainer:latest
         container_name: portainer

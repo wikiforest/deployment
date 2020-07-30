@@ -1,10 +1,5 @@
-upstream phpmyadmin {
-    server phpmyadmin:80;
-}
-
 server {
     listen ${NGINX_PORT};
-    root /opt/www/ui;
     server_name db.wikiforest.com;
 
     access_log /web/logs/nginx/phpmyadmin.access.log;
@@ -12,11 +7,13 @@ server {
     charset utf-8;
 
     location / {
-        proxy_set_header Host $http_host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
 
-        proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
-        proxy_pass http://phpmyadmin;
+    location ~ \.php$ {
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_pass phpmyadmin:9000;
     }
 }
