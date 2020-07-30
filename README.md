@@ -59,6 +59,8 @@ composer install --ignore-platform-reqs
 
 ## Deploy
 ```sh
+cp .env.example .env
+# then change .env for your local.
 docker-compose build
 docker-compose up
 ```
