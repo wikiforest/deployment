@@ -5,7 +5,7 @@ upstream hyperf {
 
 server {
     listen ${NGINX_PORT};
-    root /opt/www;
+    root /opt/www/server;
     server_name api.wikiforest.com;
 
     add_header X-Frame-Options "SAMEORIGIN";

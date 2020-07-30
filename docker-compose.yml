@@ -6,10 +6,9 @@ services:
         volumes:
             - ./deploy/nginx/templates:/etc/nginx/templates
             - ./deploy/nginx/logs:/web/logs/nginx
-            # - ./server:/opt/www/server
-            # - ./ui:/opt/www/ui
-        expose:
-            - 80
+            - .:/opt/www
+        ports:
+            - 80:80
         environment:
             NGINX_PORT: ${DOCKER_WEB_PORT}
             DOCKER_UI_IP: ${DOCKER_UI_IP}
@@ -19,8 +18,11 @@ services:
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_server_hyperf
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
-        entrypoint: ["php", "/opt/www/bin/hyperf.php", "start"]
+        entrypoint: ["php", "/opt/www/server/bin/hyperf.php", "start"]
         restart: always
+        expose:
+            - 9501
+            - 9502
         tty: true
         volumes:
             - .:/opt/www
