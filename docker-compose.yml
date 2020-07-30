@@ -8,10 +8,9 @@ services:
             - ./deploy/nginx/logs:/web/logs/nginx
             - .:/opt/www
         ports:
-            - 80:80
+            - 80:${DOCKER_WEB_PORT}
         environment:
             NGINX_PORT: ${DOCKER_WEB_PORT}
-            DOCKER_UI_IP: ${DOCKER_UI_IP}
     server:
         build:
             context: ./deploy/docker/server
@@ -69,4 +68,3 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         expose:
             - 9000
-
