@@ -69,3 +69,4 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
         expose:
             - 9000
+
