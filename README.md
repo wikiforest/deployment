@@ -90,7 +90,7 @@ UI host:
 Api host:
 [https://api.wikiforest.com/](https://api.wikiforest.com/ "https://api.wikiforest.com/")
 
-## Tools
+## Local Develop Tools
 ### Adminer
 https://db.wikiforest.com
 
