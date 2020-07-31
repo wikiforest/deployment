@@ -57,12 +57,24 @@ cd ./server
 composer install --ignore-platform-reqs
 ```
 
-## Deploy
+## Deployment
+First of all, See [mkcert document](https://github.com/FiloSottile/mkcert/blob/master/README.md "mkcert document") and install mkcert in your system.
+```sh
+cd deploy/cert/dev
+mkcert -install
+```
+
+And then, back to the deployment root to continue.
 ```sh
 cp .env.example .env
 # then change .env for your local.
 docker-compose build
 docker-compose up
+```
+
+If you want to uninstall current certs, run:
+```sh
+mkcert -uninstall
 ```
 
 ## UI
@@ -72,15 +84,18 @@ First, start the [deployment service](https://github.com/wikiforest/server "depl
 docker-compose exec ui yarn dev
 ```
 
-And visit:   
-[http://wikiforest.com/](http://wikiforest.com/ "http://wikiforest.com/")
+UI host:   
+[https://wikiforest.com/](https://wikiforest.com/ "https://api.wikiforest.com/")
+
+Api host:
+[https://api.wikiforest.com/](https://api.wikiforest.com/ "https://api.wikiforest.com/")
 
 ## Tools
 ### Adminer
-http://db.wikiforest.com
+https://db.wikiforest.com
 
 ### Portainer
-http://container.wikiforest.com
+https://container.wikiforest.com
 
 ## Contact Alex
 [omytty@126.com](mailto:omytty@126.com "omytty@126.com")

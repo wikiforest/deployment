@@ -6,12 +6,14 @@ services:
         depends_on:
             - adminer
         volumes:
+            - ./deploy/cert/${DOCKER_ENV}:/etc/nginx/cert:ro
             - ./deploy/nginx/templates:/etc/nginx/templates
             - ./deploy/nginx/logs:/web/logs/nginx
             - adminer_data:/var/www/html:ro
             - .:/opt/www
         ports:
             - 80:${DOCKER_WEB_PORT}
+            - 443:443
         environment:
             NGINX_PORT: ${DOCKER_WEB_PORT}
     server:

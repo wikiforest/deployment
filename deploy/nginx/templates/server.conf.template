@@ -5,6 +5,7 @@ upstream hyperf {
 
 server {
     listen ${NGINX_PORT};
+    listen 443 ssl;
     root /opt/www/server;
     server_name api.wikiforest.com;
     charset utf-8;

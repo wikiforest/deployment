@@ -4,6 +4,7 @@ upstream nextjs {
 
 server {
     listen ${NGINX_PORT};
+    listen 443 ssl;
     root /opt/www/ui;
     server_name wikiforest.com www.wikiforest.com;
 

@@ -4,6 +4,7 @@ upstream portainer {
 
 server {
     listen ${NGINX_PORT};
+    listen 443 ssl;
     server_name container.wikiforest.com;
 
     access_log /web/logs/nginx/portainer.access.log;
