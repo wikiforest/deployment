@@ -1,5 +1,5 @@
 upstream portainer {
-    server portainer:9000;
+    server portainer:9001;
 }
 
 server {

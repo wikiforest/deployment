@@ -75,6 +75,12 @@ docker-compose exec ui yarn dev
 And visit:   
 [http://wikiforest.com/](http://wikiforest.com/ "http://wikiforest.com/")
 
+## Tools
+### Adminer
+http://db.wikiforest.com
+
+### Portainer
+http://container.wikiforest.com
+
 ## Contact Alex
 [omytty@126.com](mailto:omytty@126.com "omytty@126.com")
-

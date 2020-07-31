@@ -1,3 +1,5 @@
 FROM node:14-alpine3.10
 
+COPY . /opt/www
+
 WORKDIR /opt/www/ui

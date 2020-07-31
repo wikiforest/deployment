@@ -1,0 +1,22 @@
+server {
+    listen ${NGINX_PORT};
+    server_name db.wikiforest.com;
+    index index.php index.html;
+    root /var/www/html;
+
+    access_log /web/logs/nginx/adminer.access.log;
+    error_log  /web/logs/nginx/adminer.error.log;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        try_files      $uri =404;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_index  index.php;
+        fastcgi_pass adminer:9000;
+    }
+}

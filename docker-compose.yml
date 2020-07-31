@@ -3,9 +3,12 @@ services:
     web:
         image: nginx:latest
         restart: always
+        depends_on:
+            - adminer
         volumes:
             - ./deploy/nginx/templates:/etc/nginx/templates
             - ./deploy/nginx/logs:/web/logs/nginx
+            - adminer_data:/var/www/html:ro
             - .:/opt/www
         ports:
             - 80:${DOCKER_WEB_PORT}
@@ -41,31 +44,36 @@ services:
         image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
         volumes:
-            - ./deploy/mysql:/var/lib/mysql
+            - mysql_data:/var/lib/mysql
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
         expose:
             - ${DOCKER_DB_PORT}
-    phpmyadmin:
-        image: phpmyadmin/phpmyadmin:4.9.4-fpm-alpine
+    adminer:
+        build: ./deploy/docker/adminer
         restart: always
-        environment:
-            PMA_HOST: db
-            PMA_VERBOSE: 8
-            PMA_PORT: ${DOCKER_DB_PORT}
-            MYSQL_USER: root
-            MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
         volumes:
-            - ./deploy/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+            - adminer_data:/var/www/html
+            - ./deploy/adminer/pepa-linha-dark:/var/www/html/designs/pepa-linha-dark
+        environment:
+            ADMINER_PLUGINS: "tables-filter edit-foreign"
+            ADMINER_DESIGN: "ng9"
         expose:
-            - 80
             - 9000
     portainer:
-        image: portainer/portainer:latest
+        image: portainer/portainer:alpine
         container_name: portainer
+        command: -H unix:///var/run/docker.sock -p :9001
         restart: always
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            - portainer_data:/data
         expose:
-            - 9000
+            - 9001
+            - 8000
+
+volumes:
+    mysql_data:
+    adminer_data:
+    portainer_data:
