@@ -1,0 +1,6 @@
+[submodule "server"]
+	path = server
+	url = git@github.com:wikiforest/server.git
+[submodule "ui"]
+	path = ui
+	url = git@github.com:wikiforest/ui.git
