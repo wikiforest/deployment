@@ -22,14 +22,10 @@ services:
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_server_hyperf
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
-        entrypoint: ["php", "/opt/www/server/bin/hyperf.php", "start"]
         restart: always
-        expose:
-            - 9501
-            - 9502
         tty: true
         volumes:
-            - .:/opt/www
+            - ./server:/opt/www
     ui:
         build:
             context: ./deploy/docker/ui
@@ -38,10 +34,8 @@ services:
         image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}
         restart: always
         tty: true
-        expose:
-            - 3000
         volumes:
-            - .:/opt/www
+            - ./ui:/opt/www
     db:
         image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
@@ -57,12 +51,9 @@ services:
         restart: always
         volumes:
             - adminer_data:/var/www/html
-            - ./deploy/adminer/pepa-linha-dark:/var/www/html/designs/pepa-linha-dark
         environment:
             ADMINER_PLUGINS: "tables-filter edit-foreign"
             ADMINER_DESIGN: "ng9"
-        expose:
-            - 9000
     portainer:
         image: portainer/portainer:alpine
         container_name: portainer
@@ -71,9 +62,6 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - portainer_data:/data
-        expose:
-            - 9001
-            - 8000
 
 volumes:
     mysql_data:

@@ -84,6 +84,7 @@ mkcert -uninstall
 First, start the [deployment service](https://github.com/wikiforest/server "deployment service"), then, start the frontend develop server:
 
 ```bash
+docker-compose exec ui yarn
 docker-compose exec ui yarn dev
 ```
 

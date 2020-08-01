@@ -1,8 +1,8 @@
 FROM node:14-alpine3.10
 
-COPY ./ui /opt/www/ui
+COPY ./ui /opt/www
 
-WORKDIR /opt/www/ui
+WORKDIR /opt/www
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && yarn \
