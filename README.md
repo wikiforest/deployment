@@ -58,13 +58,16 @@ composer install --ignore-platform-reqs
 ```
 
 ## Deployment
-First of all, See [mkcert document](https://github.com/FiloSottile/mkcert/blob/master/README.md "mkcert document") and install mkcert in your system.
+First of all, See [mkcert document](https://github.com/FiloSottile/mkcert/blob/master/README.md "mkcert document") and install mkcert.
+
+Then, install local CA certificates in your system trust store, and generate the cert and CA key (for develop).
 ```sh
-cd deploy/cert/dev
 mkcert -install
+mkdir -p deploy/cert/dev
+mkcert -key-file .\deploy\cert\dev\key.pem -cert-file .\deploy\cert\dev\cert.pem wikiforest.com *.wikiforest.com
 ```
 
-And then, back to the deployment root to continue.
+And then, add an env file from example file, and start services.
 ```sh
 cp .env.example .env
 # then change .env for your local.
