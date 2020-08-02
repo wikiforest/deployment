@@ -3,13 +3,16 @@ upstream nextjs {
 }
 
 server {
+    set $service_name UI;
     listen ${NGINX_PORT};
     listen 443 ssl;
-    root /opt/www/ui;
     server_name wikiforest.com www.wikiforest.com;
 
-    access_log /web/logs/nginx/ui.access.log;
-    error_log  /web/logs/nginx/ui.error.log;
+    error_log syslog:server=fluentd:24224,tag=nginx,facility=local1,severity=warn warn;
+    access_log syslog:server=fluentd:24224,tag=nginx,facility=local1,severity=info simple;
+
+    access_log /dev/stdout simple;
+    error_log  off;
     charset utf-8;
 
     location / {

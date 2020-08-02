@@ -3,14 +3,15 @@ services:
     web:
         image: nginx:latest
         restart: always
+        links:
+            - fluentd
         depends_on:
             - adminer
         volumes:
+            - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
             - ./deploy/cert/${DOCKER_ENV}:/etc/nginx/cert:ro
             - ./deploy/nginx/templates:/etc/nginx/templates
-            - ./deploy/nginx/logs:/web/logs/nginx
             - adminer_data:/var/www/html:ro
-            - .:/opt/www
         ports:
             - 80:${DOCKER_WEB_PORT}
             - 443:443
@@ -21,6 +22,8 @@ services:
             context: ./deploy/docker/server
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_server_hyperf
+        links:
+            - fluentd
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
         restart: always
         tty: true
@@ -41,6 +44,7 @@ services:
         command: --default-authentication-plugin=mysql_native_password
         volumes:
             - mysql_data:/var/lib/mysql
+            - ./deploy/mysql/conf.d:/etc/mysql/conf.d
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
@@ -62,6 +66,16 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - portainer_data:/data
+    fluentd:
+        build: ./deploy/docker/fluentd
+        volumes:
+            - ./deploy/fluentd/conf:/fluentd/etc
+            - ./deploy/fluentd/logs:/data
+        ports:
+            - "24224:24224"
+            - "24224:24224/udp"
+            - "24225:24225"
+            - "24225:24225/udp"
 
 volumes:
     mysql_data:

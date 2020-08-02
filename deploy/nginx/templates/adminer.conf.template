@@ -5,8 +5,8 @@ server {
     index index.php index.html;
     root /var/www/html;
 
-    access_log /web/logs/nginx/adminer.access.log;
-    error_log  /web/logs/nginx/adminer.error.log;
+    access_log off;
+    error_log  off;
     charset utf-8;
 
     location / {

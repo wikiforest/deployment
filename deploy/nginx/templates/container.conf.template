@@ -7,8 +7,8 @@ server {
     listen 443 ssl;
     server_name container.wikiforest.com;
 
-    access_log /web/logs/nginx/portainer.access.log;
-    error_log  /web/logs/nginx/portainer.error.log;
+    access_log off;
+    error_log  off;
     charset utf-8;
 
     location / {

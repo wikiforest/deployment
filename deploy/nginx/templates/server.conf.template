@@ -4,9 +4,9 @@ upstream hyperf {
 }
 
 server {
+    set $service_name API;
     listen ${NGINX_PORT};
     listen 443 ssl;
-    root /opt/www/server;
     server_name api.wikiforest.com;
     charset utf-8;
 
@@ -14,8 +14,8 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header X-Content-Type-Options "nosniff";
 
-    access_log /web/logs/nginx/access.log;
-    error_log  /web/logs/nginx/error.log;
+    error_log syslog:server=fluentd:24224,tag=nginx,facility=local0,severity=notice notice;
+    access_log syslog:server=fluentd:24224,tag=nginx,facility=local0,severity=debug simple;
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
