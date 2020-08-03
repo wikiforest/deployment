@@ -97,7 +97,7 @@ Api host:
 ## Log Files
 Fluentd Document: [https://docs.fluentd.org/](https://docs.fluentd.org/ "https://docs.fluentd.org/")
 
-All log files are in `/deploy/fluentd/logs`
+All log files are in `/deploy/fluentd/logs`, and you may use `less -R` to view log files.
 
 ## Local Develop Tools
 ### Adminer
