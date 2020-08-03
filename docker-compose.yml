@@ -24,6 +24,11 @@ services:
         container_name: wiki_server_hyperf
         links:
             - fluentd
+        logging:
+            driver: "fluentd"
+            options:
+                fluentd-address: localhost:24225
+                tag: server.stdout
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
         restart: always
         tty: true
@@ -34,7 +39,7 @@ services:
             context: ./deploy/docker/ui
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_ui_nextjs
-        image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}
+        image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}-${DOCKER_ENV}
         restart: always
         tty: true
         volumes:
@@ -52,6 +57,7 @@ services:
             - ${DOCKER_DB_PORT}
     adminer:
         build: ./deploy/docker/adminer
+        image: wikiforest/adminer-${DOCKER_ENV}
         restart: always
         volumes:
             - adminer_data:/var/www/html
@@ -68,6 +74,7 @@ services:
             - portainer_data:/data
     fluentd:
         build: ./deploy/docker/fluentd
+        image: wikiforest/fluentd-${DOCKER_ENV}
         volumes:
             - ./deploy/fluentd/conf:/fluentd/etc
             - ./deploy/fluentd/logs:/data

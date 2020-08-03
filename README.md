@@ -94,6 +94,11 @@ UI host:
 Api host:   
 [https://api.wikiforest.com/](https://api.wikiforest.com/ "https://api.wikiforest.com/")
 
+## Logging Files
+Fluentd Document: [https://docs.fluentd.org/](https://docs.fluentd.org/ "https://docs.fluentd.org/")
+
+All log files are in `/deploy/fluentd/logs`
+
 ## Local Develop Tools
 ### Adminer
 https://db.wikiforest.com
