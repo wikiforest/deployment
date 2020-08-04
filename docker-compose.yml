@@ -1,28 +1,31 @@
 version: "3.8"
 services:
-    web:
-        image: nginx:latest
+    nginx:
+        build:
+            context: ./nginx
+            args:
+                DOCKER_ENV: ${DOCKER_ENV}
+        environment:
+            NGINX_PORT: ${DOCKER_WEB_PORT}
+        image: wikiforest/nginx:latest
         restart: always
+        ports:
+            - 80:${DOCKER_WEB_PORT}
+            - 443:443
         networks:
             - default
             - logger_net
         depends_on:
-            - adminer
             - fluentd
         volumes:
-            - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf
-            - ./deploy/cert/${DOCKER_ENV}:/etc/nginx/cert:ro
-            - ./deploy/nginx/templates:/etc/nginx/templates
             - adminer_data:/var/www/html:ro
-        ports:
-            - 80:${DOCKER_WEB_PORT}
-            - 443:443
-        environment:
-            NGINX_PORT: ${DOCKER_WEB_PORT}
     server:
         build:
             context: ./server
-            dockerfile: Dockerfile.${DOCKER_ENV}
+            dockerfile: Dockerfile
+            args:
+                DOCKER_ENV: ${DOCKER_ENV}
+                COMPOSER_ARGS: ${DOCKER_COMPOSER_ARGS}
         container_name: wiki_server_hyperf
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
         restart: always
@@ -47,16 +50,17 @@ services:
     ui:
         build:
             context: ./ui
-            dockerfile: Dockerfile.${DOCKER_ENV}
+            dockerfile: Dockerfile
         container_name: wiki_ui_nextjs
         image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}-${DOCKER_ENV}
         restart: always
         tty: true
+        entrypoint: ["yarn", "dev"]
         volumes:
             - ./ui:/opt/www
             - ui_node_modules:/opt/www/node_modules
             - ui_next:/opt/www/.next
-    db:
+    mysql:
         image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
         volumes:
@@ -67,15 +71,6 @@ services:
             MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
         expose:
             - ${DOCKER_DB_PORT}
-    adminer:
-        build: ./deploy/docker/adminer
-        image: wikiforest/adminer-${DOCKER_ENV}
-        restart: always
-        volumes:
-            - adminer_data:/var/www/html
-        environment:
-            ADMINER_PLUGINS: "tables-filter edit-foreign"
-            ADMINER_DESIGN: "ng9"
     fluentd:
         build: ./deploy/docker/fluentd
         image: wikiforest/fluentd-${DOCKER_ENV}
@@ -90,14 +85,15 @@ services:
             - "24224:24224/udp"
             - "24225:24225"
             - "24225:24225/udp"
-    # portainer:
-    #     image: portainer/portainer:alpine
-    #     container_name: portainer
-    #     command: -H unix:///var/run/docker.sock -p :9001
-    #     restart: always
-    #     volumes:
-    #         - /var/run/docker.sock:/var/run/docker.sock
-    #         - portainer_data:/data
+    adminer:
+        build: ./deploy/docker/adminer
+        image: wikiforest/adminer-${DOCKER_ENV}
+        restart: always
+        volumes:
+            - adminer_data:/var/www/html
+        environment:
+            ADMINER_PLUGINS: "tables-filter edit-foreign"
+            ADMINER_DESIGN: "ng9"
 
 networks:
     logger_net:
