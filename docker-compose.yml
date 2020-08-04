@@ -21,7 +21,7 @@ services:
             NGINX_PORT: ${DOCKER_WEB_PORT}
     server:
         build:
-            context: ./deploy/docker/server
+            context: ./server
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_server_hyperf
         image: wikiforest/hyperf:${DOCKER_SERVER_IMAGE_TAB}
@@ -37,6 +37,8 @@ services:
                 order: start-first
         volumes:
             - ./server:/opt/www
+            - server_vendor:/opt/www/vendor
+            - server_runtime:/opt/www/runtime
         logging:
             driver: "fluentd"
             options:
@@ -44,7 +46,7 @@ services:
                 tag: server.stdout
     ui:
         build:
-            context: ./deploy/docker/ui
+            context: ./ui
             dockerfile: Dockerfile.${DOCKER_ENV}
         container_name: wiki_ui_nextjs
         image: wikiforest/nextjs:${DOCKER_UI_IMAGE_TAB}-${DOCKER_ENV}
@@ -52,6 +54,8 @@ services:
         tty: true
         volumes:
             - ./ui:/opt/www
+            - ui_node_modules:/opt/www/node_modules
+            - ui_next:/opt/www/.next
     db:
         image: mysql:8
         command: --default-authentication-plugin=mysql_native_password
@@ -72,14 +76,6 @@ services:
         environment:
             ADMINER_PLUGINS: "tables-filter edit-foreign"
             ADMINER_DESIGN: "ng9"
-    portainer:
-        image: portainer/portainer:alpine
-        container_name: portainer
-        command: -H unix:///var/run/docker.sock -p :9001
-        restart: always
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - portainer_data:/data
     fluentd:
         build: ./deploy/docker/fluentd
         image: wikiforest/fluentd-${DOCKER_ENV}
@@ -94,6 +90,14 @@ services:
             - "24224:24224/udp"
             - "24225:24225"
             - "24225:24225/udp"
+    # portainer:
+    #     image: portainer/portainer:alpine
+    #     container_name: portainer
+    #     command: -H unix:///var/run/docker.sock -p :9001
+    #     restart: always
+    #     volumes:
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    #         - portainer_data:/data
 
 networks:
     logger_net:
@@ -101,4 +105,7 @@ networks:
 volumes:
     mysql_data:
     adminer_data:
-    portainer_data:
+    server_vendor:
+    server_runtime:
+    ui_node_modules:
+    ui_next:
