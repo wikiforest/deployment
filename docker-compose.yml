@@ -69,8 +69,8 @@ services:
         restart: always
         environment:
             MYSQL_ROOT_PASSWORD: ${DOCKER_DB_PASSWD}
-        expose:
-            - ${DOCKER_DB_PORT}
+        ports:
+            - ${DOCKER_DB_PORT}:${DOCKER_DB_PORT}
     fluentd:
         build: ./deploy/docker/fluentd
         image: wikiforest/fluentd-${DOCKER_ENV}
