@@ -103,8 +103,5 @@ All log files are in `/deploy/fluentd/logs`, and you may use `less -R` to view l
 ### Adminer
 https://db.wikiforest.com
 
-### Portainer
-https://container.wikiforest.com
-
 ## Contact Alex
 [omytty@126.com](mailto:omytty@126.com "omytty@126.com")
